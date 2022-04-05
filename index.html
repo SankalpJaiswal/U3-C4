@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+
+    <link rel="stylesheet" href="./styles/main.css">
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="sidebar">
+        <!--DO NOT CHANGE THIS ID's-->
+        <!--Append the horizontal navbar(sidebar) here only-->
+       
+      </div>
+
+      <div id="main">
+        <!--DO NOT CHANGE THIS ID's-->
+        <!--Append psychology blogs here only-->
+      </div>
+    </div>
+  </body>
+</html>
+
+<script type="module">
+  import sidebar from "./components/sidebar.js";
+  // console.log('sidebar:', sidebar);
+
+  document.querySelector("#sidebar").innerHTML = sidebar();
+
+  const products = async() => {
+
+try{
+  
+  let res = await fetch(`https://blog-search-u3c4.herokuapp.com/api/blogs/psychology`);
+  let data = await res.json();
+
+  console.log(data);
+
+  append(data)
+
+
+}
+catch(err){
+  console.log('err:', err)
+}
+}
+
+products()
+
+function append(data){
+
+  document.querySelector("#main").innerHTML= ""
+
+data.forEach((elem) => {
+  let div = document.createElement("div");
+  div.setAttribute("class","div1")
+
+  let title = document.createElement("p");
+  title.innerText = elem.title;
+  title.addEventListener("click", function(){
+    detail(elem);
+    window.location.href="blog.html"
+  })
+
+  let para = document.createElement("p");
+  para.innerText = elem.description;
+
+  let img = document.createElement("img");
+  img.src = elem.urlToImage
+
+  div.append(title,para,img);
+  document.querySelector("#main").append(div);
+  
+});
+
+
+}
+
+function detail(elem){
+  localStorage.setItem("article",JSON.stringify(elem))
+}
+
+
+let input_box = document.querySelector("#searchbar");
+input_box.addEventListener("keypress", ()=>{
+  getData(event);
+})
+
+const getData = async(e) => {
+  try{
+    if(e.code === "Enter")
+    {
+      let input = input_box.value;
+      localStorage.setItem("search_term",JSON.stringify(input));
+      window.location.href= "search.html";
+     
+    }
+  }
+  catch(err){
+    console.log('err:', err)
+  }
+}
+
+
+</script>
